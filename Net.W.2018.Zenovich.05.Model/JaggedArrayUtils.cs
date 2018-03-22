@@ -9,6 +9,9 @@ namespace Net.W._2018.Zenovich._05.Model
 {
     public class JaggedArrayUtils : IJaggedArrayUtils
     {
+        private delegate bool FuncComparer<T>(T first, T second)
+            where T : IComparable<T>;
+    
         private delegate T FuncFilter<T>(T[] array);
 
         private void Swap<T>(T[] items, int left, int right)
@@ -21,16 +24,16 @@ namespace Net.W._2018.Zenovich._05.Model
             }
         }
 
-        public bool OrderByAscending<T>(T first, T second)
-            where T : IComparable<T>
-        {
-            return first.CompareTo(second) < 0;
-        }
-
-        public bool OrderByDescending<T>(T first, T second)
+        private bool OrderByAscending<T>(T first, T second)
             where T : IComparable<T>
         {
             return first.CompareTo(second) > 0;
+        }
+
+        private bool OrderByDescending<T>(T first, T second)
+            where T : IComparable<T>
+        {
+            return first.CompareTo(second) < 0;
         }
 
         private void BubbleSort<T>(T[][] items, T[] filterArray, FuncComparer<T> comparer)
@@ -47,6 +50,7 @@ namespace Net.W._2018.Zenovich._05.Model
                     if (comparer(filterArray[i - 1], filterArray[i]))
                     {
                         Swap(items, i - 1, i);
+                        Swap(filterArray, i - 1, i);
 
                         swapped = true;
                     }
@@ -56,10 +60,9 @@ namespace Net.W._2018.Zenovich._05.Model
             while (swapped != false);
         }
 
-        private T GetMaxElement<T>(T[] array)
-            where T : IComparable<T>
+        private int GetMaxElement(int[] array)
         {
-            T maxElement = default(T);
+            int maxElement = int.MinValue;
 
             foreach (var element in array)
             {
@@ -72,10 +75,9 @@ namespace Net.W._2018.Zenovich._05.Model
             return maxElement;
         }
 
-        private T GetMinElement<T>(T[] array)
-            where T : IComparable<T>
+        private int GetMinElement(int[] array)
         {
-            T minElement = default(T);
+            int minElement = int.MaxValue;
 
             foreach (var element in array)
             {
@@ -100,35 +102,35 @@ namespace Net.W._2018.Zenovich._05.Model
             return elementSum;
         }
 
-        public T[][] MaxSort<T>(T[][] jaggedArray, FuncComparer<T> comparer)
-            where T : IComparable<T>
+        public int[][] MaxSort(int[][] jaggedArray, OrderdBy orderdBy = OrderdBy.Ascending)
         {
-            return Sort(jaggedArray, GetMaxElement, comparer);
+            return Sort(jaggedArray, GetMaxElement, orderdBy);
         }
 
-        public T[][] MinSort<T>(T[][] jaggedArray, FuncComparer<T> comparer)
-            where T : IComparable<T>
+        public int[][] MinSort(int[][] jaggedArray, OrderdBy orderdBy = OrderdBy.Ascending)
         {
-            return Sort(jaggedArray, GetMinElement, comparer);
+            return Sort(jaggedArray, GetMinElement, orderdBy);
         }
 
-        public int[][] SumSort(int[][] jaggedArray, FuncComparer<int> comparer)
+        public int[][] SumSort(int[][] jaggedArray, OrderdBy orderdBy = OrderdBy.Ascending)
         {
-            return Sort(jaggedArray, GetSumElement, comparer);
+            return Sort(jaggedArray, GetSumElement, orderdBy);
         }
 
 
-        private T[][] Sort<T>(T[][] jaggedArray, FuncFilter<T> filter, FuncComparer<T> comparer)
+        private T[][] Sort<T>(T[][] jaggedArray, FuncFilter<T> filter, OrderdBy orderdBy)
             where T : IComparable<T>
         {
+            FuncComparer<T> comparer = OrderByAscending;
+
             if (jaggedArray == null)
             {
                 throw new ArgumentNullException(nameof(jaggedArray));
             }
 
-            if (comparer == null)
+            if (orderdBy == OrderdBy.Descending)
             {
-                throw new ArgumentNullException(nameof(comparer));
+                comparer = OrderByDescending;
             }
 
             int length = jaggedArray.Length;

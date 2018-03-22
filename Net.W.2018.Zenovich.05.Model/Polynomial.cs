@@ -9,7 +9,7 @@ namespace Net.W._2018.Zenovich._05.Model
 
         public Polynomial(double[] coefficients)
         {
-            _coefficients = coefficients ?? throw new NullReferenceException(nameof(coefficients));
+            _coefficients = coefficients ?? throw new ArgumentNullException(nameof(coefficients));
         }
 
         private static int GetMinLength(Polynomial first, Polynomial second)
@@ -23,6 +23,16 @@ namespace Net.W._2018.Zenovich._05.Model
 
         private static Polynomial FactoryInitialization(Polynomial first, Polynomial second, Func<double, double, double> filter)
         {
+            if (first == null)
+            {
+                throw new ArgumentNullException(nameof(first));
+            }
+
+            if (second == null)
+            {
+                throw new ArgumentNullException(nameof(second));
+            }
+
             int minLength = GetMinLength(first, second);
             int maxLength = first._coefficients.Length != minLength ? minLength : second._coefficients.Length;
 
