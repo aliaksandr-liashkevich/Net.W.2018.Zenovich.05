@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Net.W._2018.Zenovich._05.API;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace Net.W._2018.Zenovich._05.Model
 {
-    public class JaggedArrayUtilscs
+    public class JaggedArrayUtils : IJaggedArrayUtils
     {
-        public delegate bool FuncComparer<T>(T first, T second)
-            where T : IComparable<T>;
-
-        public delegate T FuncFilter<T>(T[] array);
+        private delegate T FuncFilter<T>(T[] array);
 
         private void Swap<T>(T[] items, int left, int right)
         {

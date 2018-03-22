@@ -9,7 +9,7 @@ namespace Net.W._2018.Zenovich._05.Model
 
         public Polynomial(double[] coefficients)
         {
-            _coefficients = coefficients;
+            _coefficients = coefficients ?? throw new NullReferenceException(nameof(coefficients));
         }
 
         private static int GetMinLength(Polynomial first, Polynomial second)

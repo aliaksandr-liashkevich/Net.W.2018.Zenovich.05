@@ -40,9 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JaggedArrayUtilscs.cs" />
+    <Compile Include="JaggedArrayUtils.cs" />
     <Compile Include="Polynomial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Net.W.2018.Zenovich.05.API\Net.W.2018.Zenovich.05.API.csproj">
+      <Project>{836c3f35-4e3d-466a-b173-a8cab6c2c012}</Project>
+      <Name>Net.W.2018.Zenovich.05.API</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
