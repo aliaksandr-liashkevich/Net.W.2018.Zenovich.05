@@ -109,6 +109,30 @@ namespace Net.W._2018.Zenovich._05.Model
         {
             return 710347640 + EqualityComparer<double[]>.Default.GetHashCode(_coefficients);
         }
+
+        public override string ToString()
+        {
+            string toString = string.Empty;
+            int length = _coefficients.Length;
+
+            if (length < 0)
+            {
+                return toString;
+            }
+
+            int i = length - 1;
+
+            while (i > 0)
+            {
+                toString += $"{_coefficients[i]}x{i} + ";
+
+                i++;
+            }
+
+            toString += $"{_coefficients[0]}";
+
+            return toString;
+        }
         /*
         private static bool IsEquivalentPolynomial(Polynomial first, Polynomial second)
         {
