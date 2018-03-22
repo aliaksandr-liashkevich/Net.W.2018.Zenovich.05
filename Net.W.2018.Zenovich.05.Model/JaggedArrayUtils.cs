@@ -9,10 +9,10 @@ namespace Net.W._2018.Zenovich._05.Model
 {
     public class JaggedArrayUtils : IJaggedArrayUtils
     {
-        private delegate bool FuncComparer<T>(T first, T second)
+        protected delegate bool FuncComparer<T>(T first, T second)
             where T : IComparable<T>;
-    
-        private delegate T FuncFilter<T>(T[] array);
+
+        protected delegate T FuncFilter<T>(T[] array);
 
         private void Swap<T>(T[] items, int left, int right)
         {
@@ -117,21 +117,32 @@ namespace Net.W._2018.Zenovich._05.Model
             return Sort(jaggedArray, GetSumElement, orderdBy);
         }
 
+        protected virtual FuncComparer<T> GetOrderBy<T>(OrderdBy orderdBy)
+            where T : IComparable<T>
+        {
+            switch (orderdBy)
+            {
+                case OrderdBy.Descending:
+                    {
+                        return OrderByAscending;
+                    }
+                default:
+                    {
+                        return OrderByAscending;
+                    }
+            }
+        }
+
 
         private T[][] Sort<T>(T[][] jaggedArray, FuncFilter<T> filter, OrderdBy orderdBy)
             where T : IComparable<T>
         {
-            FuncComparer<T> comparer = OrderByAscending;
-
             if (jaggedArray == null)
             {
                 throw new ArgumentNullException(nameof(jaggedArray));
             }
 
-            if (orderdBy == OrderdBy.Descending)
-            {
-                comparer = OrderByDescending;
-            }
+            FuncComparer<T> comparer = GetOrderBy<T>(orderdBy);
 
             int length = jaggedArray.Length;
             T[] filterArray = new T[length];

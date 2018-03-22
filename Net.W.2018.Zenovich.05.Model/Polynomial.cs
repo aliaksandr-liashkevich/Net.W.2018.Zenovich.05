@@ -33,20 +33,23 @@ namespace Net.W._2018.Zenovich._05.Model
                 throw new ArgumentNullException(nameof(second));
             }
 
-            int minLength = GetMinLength(first, second);
-            int maxLength = first._coefficients.Length != minLength ? minLength : second._coefficients.Length;
+            int firstLength = first._coefficients.Length;
+            int secondLength = second._coefficients.Length;
+
+            int minLength = firstLength < secondLength ? firstLength : secondLength;
+            int maxLength = firstLength > secondLength ? firstLength : secondLength;
 
             double[] firstCoefficients = first._coefficients;
             double[] secondCoefficients = second._coefficients;
 
-            double[] result = new double[minLength];
+            double[] result = new double[maxLength];
             
             for (int i = 0; i < minLength; i++)
             {
                 result[i] = filter(firstCoefficients[i], secondCoefficients[i]);
             }
 
-            firstCoefficients = firstCoefficients.Length == maxLength ? firstCoefficients : secondCoefficients;
+            firstCoefficients = firstLength == maxLength ? firstCoefficients : secondCoefficients;
 
             for (int i = minLength; i < maxLength; i++)
             {
@@ -63,14 +66,52 @@ namespace Net.W._2018.Zenovich._05.Model
 
         public static Polynomial operator -(Polynomial first, Polynomial second)
         {
+            Polynomial result = FactoryInitialization(first, second, MinusFilter);
 
-            return FactoryInitialization(first, second, MinusFilter);
+            int firstLength = first._coefficients.Length;
+            int secondLength = second._coefficients.Length;
+
+            for (int i = firstLength; i < secondLength; i++)
+            {
+                result._coefficients[i] = -result._coefficients[i];
+            }
+
+            return result;
         }
+
+        private static bool IsFirstMaxLength(Polynomial first, Polynomial second)
+        {
+            int firstLength = first._coefficients.Length;
+            int secondLength = second._coefficients.Length;
+
+            if (firstLength > secondLength)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
 
         public static Polynomial operator *(Polynomial first, Polynomial second)
         {
+            Polynomial result = FactoryInitialization(first, second, MultiplyFilter);
 
-            return FactoryInitialization(first, second, MultiplyFilter);
+            if (IsFirstMaxLength(first, second))
+            {
+                Polynomial temp = first;
+                first = second;
+                second = temp;
+            }
+
+            int secondLength = second._coefficients.Length;
+
+            for (int i = first._coefficients.Length; i < secondLength; i++)
+            {
+                result._coefficients[i] = second._coefficients[i];
+            }
+
+            return result;
         }
 
         public static bool operator ==(Polynomial polynomial1, Polynomial polynomial2)
@@ -120,16 +161,19 @@ namespace Net.W._2018.Zenovich._05.Model
                 return toString;
             }
 
-            int i = length - 1;
+            int i = 0;
 
-            while (i > 0)
+            toString += _coefficients[i] > 0 ? $"+{_coefficients[i]}" : $"{_coefficients[i]}";
+            i++;
+
+            while (i < length)
             {
-                toString += $"{_coefficients[i]}x{i} + ";
+                toString += _coefficients[i] > 0 ? 
+                    $" +{_coefficients[i]}x^{i}" : 
+                    $" {_coefficients[i]}x^{i}";
 
                 i++;
             }
-
-            toString += $"{_coefficients[0]}";
 
             return toString;
         }
