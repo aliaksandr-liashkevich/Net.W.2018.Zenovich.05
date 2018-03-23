@@ -163,12 +163,12 @@ namespace Net.W._2018.Zenovich._05.Model
 
             int i = 0;
 
-            toString += _coefficients[i] > 0 ? $"+{_coefficients[i]}" : $"{_coefficients[i]}";
+            toString += _coefficients[i] >= 0 ? $"+{_coefficients[i]}" : $"{_coefficients[i]}";
             i++;
 
             while (i < length)
             {
-                toString += _coefficients[i] > 0 ? 
+                toString += _coefficients[i] >= 0 ? 
                     $" +{_coefficients[i]}x^{i}" : 
                     $" {_coefficients[i]}x^{i}";
 
@@ -177,27 +177,5 @@ namespace Net.W._2018.Zenovich._05.Model
 
             return toString;
         }
-        /*
-        private static bool IsEquivalentPolynomial(Polynomial first, Polynomial second)
-        {
-            if (first._coefficients.Length != second._coefficients.Length)
-            {
-                return false;
-            }
-
-            int minLength = GetMinLength(first, second);
-            double[] firstCoefficients = first._coefficients;
-            double[] secondCoefficients = second._coefficients;
-
-            for (int i = 0; i < minLength; i++)
-            {
-                if (firstCoefficients[i] != secondCoefficients[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }*/
     }
 }

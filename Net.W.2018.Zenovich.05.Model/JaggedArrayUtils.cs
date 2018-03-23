@@ -124,7 +124,7 @@ namespace Net.W._2018.Zenovich._05.Model
             {
                 case OrderdBy.Descending:
                     {
-                        return OrderByAscending;
+                        return OrderByDescending;
                     }
                 default:
                     {
@@ -132,7 +132,6 @@ namespace Net.W._2018.Zenovich._05.Model
                     }
             }
         }
-
 
         private T[][] Sort<T>(T[][] jaggedArray, FuncFilter<T> filter, OrderdBy orderdBy)
             where T : IComparable<T>
