@@ -5,6 +5,8 @@ namespace Net.W._2018.Zenovich._05.Model
 {
     public class Polynomial
     {
+        public const double Eps = 0.000000001;
+
         private double[] _coefficients;
 
         public Polynomial(double[] coefficients)
@@ -139,16 +141,35 @@ namespace Net.W._2018.Zenovich._05.Model
             return first * second;
         }
 
+        private bool IsEqualDoubleArray(double[] first, double[] second)
+        {
+            if (first.Length != second.Length)
+            {
+                return false;
+            }
+
+            int length = first.Length;
+            for (int i = 0; i < length; i++)
+            {
+                if (first[i] - second[i] > Eps)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public override bool Equals(object obj)
         {
             var polynomial = obj as Polynomial;
             return polynomial != null &&
-                   EqualityComparer<double[]>.Default.Equals(_coefficients, polynomial._coefficients);
+                   IsEqualDoubleArray(_coefficients, polynomial._coefficients);
         }
 
         public override int GetHashCode()
         {
-            return 710347640 + EqualityComparer<double[]>.Default.GetHashCode(_coefficients);
+            return 710347640 + _coefficients.GetHashCode();
         }
 
         public override string ToString()
