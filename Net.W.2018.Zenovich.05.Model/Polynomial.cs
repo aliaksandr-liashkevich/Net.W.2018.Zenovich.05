@@ -5,7 +5,10 @@ namespace Net.W._2018.Zenovich._05.Model
 {
     public class Polynomial
     {
-        public const double Eps = 0.000000001;
+        protected delegate double FuncFilter(double first, double second);
+        protected delegate double FuncFilterFromMinLengthToMaxLength(double maxLengthArray, bool sFirstLengthMoreThanSecondLength);
+
+        public static readonly double Eps = 0.00001;
 
         private double[] _coefficients;
 
@@ -23,7 +26,8 @@ namespace Net.W._2018.Zenovich._05.Model
 
         }
 
-        private static Polynomial FactoryInitialization(Polynomial first, Polynomial second, Func<double, double, double> filter)
+        private static Polynomial FactoryInitialization(Polynomial first, Polynomial second, 
+            FuncFilter filter, FuncFilterFromMinLengthToMaxLength maxFilter = null)
         {
             if (first == null)
             {
@@ -52,10 +56,13 @@ namespace Net.W._2018.Zenovich._05.Model
             }
 
             firstCoefficients = firstLength == maxLength ? firstCoefficients : secondCoefficients;
+            bool IsFirstLengthMoreThanSecondLength = firstLength == maxLength ? true : false; 
 
             for (int i = minLength; i < maxLength; i++)
             {
-                result[i] = firstCoefficients[i];
+                result[i] = maxFilter != null ? 
+                    maxFilter(firstCoefficients[i], IsFirstLengthMoreThanSecondLength) 
+                    : firstCoefficients[i];
             }
 
             return new Polynomial(result);
@@ -68,7 +75,7 @@ namespace Net.W._2018.Zenovich._05.Model
 
         public static Polynomial operator -(Polynomial first, Polynomial second)
         {
-            Polynomial result = FactoryInitialization(first, second, MinusFilter);
+            Polynomial result = FactoryInitialization(first, second, MinusFilter, MinusFilterFromMinLengthToMaxLength);
 
             int firstLength = first._coefficients.Length;
             int secondLength = second._coefficients.Length;
@@ -99,20 +106,6 @@ namespace Net.W._2018.Zenovich._05.Model
         {
             Polynomial result = FactoryInitialization(first, second, MultiplyFilter);
 
-            if (IsFirstMaxLength(first, second))
-            {
-                Polynomial temp = first;
-                first = second;
-                second = temp;
-            }
-
-            int secondLength = second._coefficients.Length;
-
-            for (int i = first._coefficients.Length; i < secondLength; i++)
-            {
-                result._coefficients[i] = second._coefficients[i];
-            }
-
             return result;
         }
 
@@ -124,6 +117,11 @@ namespace Net.W._2018.Zenovich._05.Model
         public static bool operator !=(Polynomial polynomial1, Polynomial polynomial2)
         {
             return !(polynomial1 == polynomial2);
+        }
+
+        private static double MinusFilterFromMinLengthToMaxLength(double number, bool isFirstLengthMoreThanSecondLength)
+        {
+            return isFirstLengthMoreThanSecondLength ? number : -number;
         }
 
         private static double PlusFilter(double first, double second)
@@ -169,7 +167,14 @@ namespace Net.W._2018.Zenovich._05.Model
 
         public override int GetHashCode()
         {
-            return 710347640 + _coefficients.GetHashCode();
+            int result = 17;
+
+            foreach (var number in _coefficients)
+            {
+                result = 37 * result + (int)number;
+            }
+
+            return result;
         }
 
         public override string ToString()

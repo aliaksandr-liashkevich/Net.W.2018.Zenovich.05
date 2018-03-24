@@ -9,10 +9,9 @@ namespace Net.W._2018.Zenovich._05.Model
 {
     public class JaggedArrayUtils : IJaggedArrayUtils
     {
-        protected delegate bool FuncComparer<T>(T first, T second)
-            where T : IComparable<T>;
+        protected delegate bool FuncComparer(int first, int second);
 
-        protected delegate T FuncFilter<T>(T[] array);
+        protected delegate int FuncFilter(int[] array);
 
         private void Swap<T>(T[] items, int left, int right)
         {
@@ -24,20 +23,17 @@ namespace Net.W._2018.Zenovich._05.Model
             }
         }
 
-        private bool OrderByAscending<T>(T first, T second)
-            where T : IComparable<T>
+        private bool OrderByAscending(int first, int second)
         {
             return first.CompareTo(second) > 0;
         }
 
-        private bool OrderByDescending<T>(T first, T second)
-            where T : IComparable<T>
+        private bool OrderByDescending(int first, int second)
         {
             return first.CompareTo(second) < 0;
         }
 
-        private void BubbleSort<T>(T[][] items, T[] filterArray, FuncComparer<T> comparer)
-            where T : IComparable<T>
+        private void BubbleSort(int[][] items, int[] filterArray, FuncComparer comparer)
         {
             bool swapped;
 
@@ -117,8 +113,7 @@ namespace Net.W._2018.Zenovich._05.Model
             return Sort(jaggedArray, GetSumElement, orderdBy);
         }
 
-        protected virtual FuncComparer<T> GetOrderBy<T>(OrderdBy orderdBy)
-            where T : IComparable<T>
+        protected virtual FuncComparer GetOrderBy(OrderdBy orderdBy)
         {
             switch (orderdBy)
             {
@@ -133,18 +128,17 @@ namespace Net.W._2018.Zenovich._05.Model
             }
         }
 
-        private T[][] Sort<T>(T[][] jaggedArray, FuncFilter<T> filter, OrderdBy orderdBy)
-            where T : IComparable<T>
+        private int[][] Sort(int[][] jaggedArray, FuncFilter filter, OrderdBy orderdBy)
         {
             if (jaggedArray == null)
             {
                 throw new ArgumentNullException(nameof(jaggedArray));
             }
 
-            FuncComparer<T> comparer = GetOrderBy<T>(orderdBy);
+            FuncComparer comparer = GetOrderBy(orderdBy);
 
             int length = jaggedArray.Length;
-            T[] filterArray = new T[length];
+            int[] filterArray = new int[length];
 
             for (int i = 0; i < length; i++)
             {
