@@ -23,39 +23,7 @@ namespace Net.W._2018.Zenovich._05.Tests
         }
 
         [TestMethod]
-        public void TestMethod1()
-        {
-            Polynomial firstPolynomial = new Polynomial(new double[5] {
-                20.2, 11.2, 44.1, 0, 11
-            });
-            Polynomial secondPolynomial = new Polynomial(new double[3] {
-                -11.2, 32.0, 0
-            });
-
-            var sum = firstPolynomial + secondPolynomial;
-            var minus = firstPolynomial - secondPolynomial;
-            var multi = firstPolynomial * secondPolynomial;
-
-            Debug.WriteLine(firstPolynomial);
-            Debug.WriteLine(secondPolynomial);
-
-            Debug.WriteLine(new string('-', 10));
-            Debug.WriteLine(sum);
-            Debug.WriteLine(minus);
-            Debug.WriteLine(multi);
-
-            sum = secondPolynomial + firstPolynomial;
-            minus = secondPolynomial - firstPolynomial;
-            multi = secondPolynomial * firstPolynomial;
-
-            Debug.WriteLine(new string('-', 10));
-            Debug.WriteLine(sum);
-            Debug.WriteLine(minus);
-            Debug.WriteLine(multi);
-        }
-
-        [TestMethod]
-        public void SumOperator_AreEqual()
+        public void SumOperator_AreEqualExpected()
         {
             // arrange
             Polynomial expected = new Polynomial(new double[]
@@ -71,7 +39,7 @@ namespace Net.W._2018.Zenovich._05.Tests
         }
 
         [TestMethod]
-        public void MinusOperator_AreEqual()
+        public void MinusOperator__AreEqualExpected()
         {
             // arrange
             Polynomial expected = new Polynomial(new double[]
@@ -87,7 +55,7 @@ namespace Net.W._2018.Zenovich._05.Tests
         }
 
         [TestMethod]
-        public void MultiOperator_AreEqual()
+        public void MultiOperator__AreEqualExpectedAreEqual()
         {
             // arrange
             Polynomial expected = new Polynomial(new double[]
@@ -103,7 +71,29 @@ namespace Net.W._2018.Zenovich._05.Tests
         }
 
         [TestMethod]
-        public void EqualOperator_AreEqual()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void MultiOperator_NullFirst_ArgumentNullException()
+        {
+            // arrange
+            firstPolynomial = null;
+
+            // act
+            Polynomial actual = firstPolynomial * secondPolynomial;
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void MultiOperator_NullSecond_ArgumentNullException()
+        {
+            // arrange
+            secondPolynomial = null;
+
+            // act
+            Polynomial actual = firstPolynomial + secondPolynomial;
+        }
+
+        [TestMethod]
+        public void EqualOperator__AreEqualTrue()
         {
             // arrange
             Polynomial expected = new Polynomial(new double[]
@@ -119,7 +109,7 @@ namespace Net.W._2018.Zenovich._05.Tests
         }
 
         [TestMethod]
-        public void ToString_AreEqual()
+        public void ToString_AreEqualExpected()
         {
             // arrange
             String expected = new Polynomial(new double[]
@@ -135,7 +125,7 @@ namespace Net.W._2018.Zenovich._05.Tests
         }
 
         [TestMethod]
-        public void GetHashCode_AreEqual()
+        public void GetHashCode_AreEqualExpected()
         {
             // arrange
             int expected = new Polynomial(new double[]
@@ -151,19 +141,19 @@ namespace Net.W._2018.Zenovich._05.Tests
         }
 
         [TestMethod]
-        public void NotEqualOperator_AreEqual()
+        public void NotEqualOperator_AreEqualFalse()
         {
             // arrange
             Polynomial expected = new Polynomial(new double[]
             {
-                20.2, 11.2, 44.1, 0
+                20.2, 11.2, 44.1, 0, 11
             });
 
             // act
             bool actual = firstPolynomial != expected;
 
             // assert
-            Assert.IsTrue(actual);
+            Assert.IsFalse(actual);
         }
     }
 }
