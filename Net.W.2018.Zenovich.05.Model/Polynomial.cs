@@ -3,13 +3,34 @@ using System.Collections.Generic;
 
 namespace Net.W._2018.Zenovich._05.Model
 {
+    /// <summary>
+    /// Contains methods for working with polynomials of degree from one variable of real type.
+    /// </summary>
     public class Polynomial
     {
-        protected delegate double FuncFilter(double first, double second);
-        protected delegate double FuncFilterFromMinLengthToMaxLength(double maxLengthArray, bool sFirstLengthMoreThanSecondLength);
-
+        /// <summary>
+        /// Comparison accuracy.
+        /// </summary>
         public static readonly double Eps = 0.00001;
 
+        /// <summary>
+        /// Filters the data in an array from the beginning to the minimum length.
+        /// </summary>
+        /// <param name="first">first input number.</param>
+        /// <param name="second">second input number.</param>
+        /// <returns>result of filtration</returns>
+        protected delegate double FuncFilter(double first, double second);
+        /// <summary>
+        /// Filters the data in an array from the minimum length to the maximum length
+        /// </summary>
+        /// <param name="maxLength">Max length of array</param>
+        /// <param name="IsFirstLengthMoreThanSecondLength">Is first length more than second length of array.</param>
+        /// <returns>result of filtration</returns>
+        protected delegate double FuncFilterFromMinLengthToMaxLength(double maxLength, bool IsFirstLengthMoreThanSecondLength);
+
+        /// <summary>
+        /// Array of coefficients.
+        /// </summary>
         private double[] _coefficients;
 
         public Polynomial(double[] coefficients)
@@ -68,11 +89,23 @@ namespace Net.W._2018.Zenovich._05.Model
             return new Polynomial(result);
         }
 
+        /// <summary>
+        /// The sum operator.
+        /// </summary>
+        /// <param name="first">left value.</param>
+        /// <param name="second">right value.</param>
+        /// <returns>Result of operation.</returns>
         public static Polynomial operator +(Polynomial first, Polynomial second)
         {
             return FactoryInitialization(first, second, PlusFilter);
         }
 
+        /// <summary>
+        /// The difference operator.
+        /// </summary>
+        /// <param name="first">left value.</param>
+        /// <param name="second">right value.</param>
+        /// <returns>Result of operation.</returns>
         public static Polynomial operator -(Polynomial first, Polynomial second)
         {
             Polynomial result = FactoryInitialization(first, second, MinusFilter, MinusFilterFromMinLengthToMaxLength);
@@ -101,22 +134,37 @@ namespace Net.W._2018.Zenovich._05.Model
             return false;
         }
 
-
+        /// <summary>
+        /// The multiplication operator.
+        /// </summary>
+        /// <param name="first">left value.</param>
+        /// <param name="second">right value.</param>
+        /// <returns>Result of operation.</returns>
         public static Polynomial operator *(Polynomial first, Polynomial second)
         {
             Polynomial result = FactoryInitialization(first, second, MultiplyFilter);
 
             return result;
         }
-
-        public static bool operator ==(Polynomial polynomial1, Polynomial polynomial2)
+        /// <summary>
+        /// The equality operator.
+        /// </summary>
+        /// <param name="first">left value.</param>
+        /// <param name="second">right value.</param>
+        /// <returns>Result of operation.</returns>
+        public static bool operator ==(Polynomial first, Polynomial second)
         {
-            return EqualityComparer<Polynomial>.Default.Equals(polynomial1, polynomial2);
+            return EqualityComparer<Polynomial>.Default.Equals(first, second);
         }
-
-        public static bool operator !=(Polynomial polynomial1, Polynomial polynomial2)
+        /// <summary>
+        /// The inequality operator.
+        /// </summary>
+        /// <param name="first">left value.</param>
+        /// <param name="second">right value.</param>
+        /// <returns>Result of operation.</returns>
+        public static bool operator !=(Polynomial first, Polynomial second)
         {
-            return !(polynomial1 == polynomial2);
+            return !(first == second);
         }
 
         private static double MinusFilterFromMinLengthToMaxLength(double number, bool isFirstLengthMoreThanSecondLength)
@@ -164,7 +212,10 @@ namespace Net.W._2018.Zenovich._05.Model
             return polynomial != null &&
                    IsEqualDoubleArray(_coefficients, polynomial._coefficients);
         }
-
+        /// <summary>
+        /// Returns a unique value.
+        /// </summary>
+        /// <returns>Unique value.</returns>
         public override int GetHashCode()
         {
             int result = 17;
@@ -176,7 +227,10 @@ namespace Net.W._2018.Zenovich._05.Model
 
             return result;
         }
-
+        /// <summary>
+        /// Сonverts an object to string.
+        /// </summary>
+        /// <returns>String representation.</returns>
         public override string ToString()
         {
             string toString = string.Empty;
