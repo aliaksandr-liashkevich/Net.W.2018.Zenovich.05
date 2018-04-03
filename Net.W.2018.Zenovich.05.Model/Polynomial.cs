@@ -228,7 +228,7 @@ namespace Net.W._2018.Zenovich._05.Model
             return result;
         }
         /// <summary>
-        /// Сonverts an object to string.
+        /// Converts an object to string.
         /// </summary>
         /// <returns>String representation.</returns>
         public override string ToString()
