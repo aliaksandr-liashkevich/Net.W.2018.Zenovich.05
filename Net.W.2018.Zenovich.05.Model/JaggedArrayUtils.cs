@@ -1,5 +1,6 @@
 ﻿using Net.W._2018.Zenovich._05.API;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,85 +37,35 @@ namespace Net.W._2018.Zenovich._05.Model
             }
         }
 
-        private bool OrderByAscending(int first, int second)
-        {
-            return first.CompareTo(second) > 0;
-        }
-
-        private bool OrderByDescending(int first, int second)
-        {
-            return first.CompareTo(second) < 0;
-        }
         /// <summary>
-        /// Implementation of sorting by a bubble.
+        /// Sorts the specified jagged array.
         /// </summary>
-        /// <param name="items">input jagged array</param>
-        /// <param name="filterArray">array of row sorting characteristics.</param>
-        /// <param name="comparer">Compares value when sorting.</param>
-        private void BubbleSort(int[][] items, int[] filterArray, FuncComparer comparer)
+        /// <param name="jaggedArray">The jagged array.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="orderdBy">The orderd by.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="jaggedArray"/> is null
+        /// or
+        /// <paramref name="filter"/> is null
+        /// </exception>
+        public int[][] Sort(int[][] jaggedArray, IComparer<int[]> filter, OrderdBy orderdBy)
         {
-            bool swapped;
-
-            do
+            if (jaggedArray == null)
             {
-                swapped = false;
-
-                for (int i = 1; i < items.Length; i++)
-                {
-                    if (comparer(filterArray[i - 1], filterArray[i]))
-                    {
-                        Swap(items, i - 1, i);
-                        Swap(filterArray, i - 1, i);
-
-                        swapped = true;
-                    }
-                }
+                throw new ArgumentNullException(nameof(jaggedArray));
             }
 
-            while (swapped != false);
-        }
-
-        private int GetMaxElement(int[] array)
-        {
-            int maxElement = int.MinValue;
-
-            foreach (var element in array)
+            if (filter == null)
             {
-                if (maxElement.CompareTo(element) < 0)
-                {
-                    maxElement = element;
-                }
+                throw new ArgumentNullException(nameof(filter));
             }
 
-            return maxElement;
+            BubbleSort(jaggedArray, filter, GetOrderableBy(orderdBy));
+
+            return jaggedArray;
         }
 
-        private int GetMinElement(int[] array)
-        {
-            int minElement = int.MaxValue;
-
-            foreach (var element in array)
-            {
-                if (minElement.CompareTo(element) > 0)
-                {
-                    minElement = element;
-                }
-            }
-
-            return minElement;
-        }
-
-        private int GetSumElement(int[] array)
-        {
-            int elementSum = default(int);
-
-            foreach (var element in array)
-            {
-                elementSum += element;
-            }
-
-            return elementSum;
-        }
         /// <summary>
         /// Sorts the rows by the max of the elements
         /// </summary>
@@ -161,6 +112,45 @@ namespace Net.W._2018.Zenovich._05.Model
             }
         }
 
+        /// <summary>
+        /// Implementation of sorting by a bubble.
+        /// </summary>
+        /// <param name="items">input jagged array</param>
+        /// <param name="filterArray">array of row sorting characteristics.</param>
+        /// <param name="comparer">Compares value when sorting.</param>
+        private void BubbleSort(int[][] items, int[] filterArray, FuncComparer comparer)
+        {
+            bool swapped;
+
+            do
+            {
+                swapped = false;
+
+                for (int i = 1; i < items.Length; i++)
+                {
+                    if (comparer(filterArray[i - 1], filterArray[i]))
+                    {
+                        Swap(items, i - 1, i);
+                        Swap(filterArray, i - 1, i);
+
+                        swapped = true;
+                    }
+                }
+            }
+
+            while (swapped != false);
+        }
+
+        private bool OrderByAscending(int first, int second)
+        {
+            return first.CompareTo(second) > 0;
+        }
+
+        private bool OrderByDescending(int first, int second)
+        {
+            return first.CompareTo(second) < 0;
+        }
+
         private int[][] Sort(int[][] jaggedArray, FuncFilter filter, OrderdBy orderdBy)
         {
             if (jaggedArray == null)
@@ -168,7 +158,10 @@ namespace Net.W._2018.Zenovich._05.Model
                 throw new ArgumentNullException(nameof(jaggedArray));
             }
 
-            FuncComparer comparer = GetOrderBy(orderdBy);
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
 
             int length = jaggedArray.Length;
             int[] filterArray = new int[length];
@@ -178,9 +171,90 @@ namespace Net.W._2018.Zenovich._05.Model
                 filterArray[i] = filter(jaggedArray[i]);
             }
 
-            BubbleSort(jaggedArray, filterArray, comparer);
+            BubbleSort(jaggedArray, filterArray, GetOrderBy(orderdBy));
 
             return jaggedArray;
+        }
+
+        private int GetMaxElement(int[] array)
+        {
+            int maxElement = int.MinValue;
+
+            foreach (var element in array)
+            {
+                if (maxElement.CompareTo(element) < 0)
+                {
+                    maxElement = element;
+                }
+            }
+
+            return maxElement;
+        }
+
+        private int GetMinElement(int[] array)
+        {
+            int minElement = int.MaxValue;
+
+            foreach (var element in array)
+            {
+                if (minElement.CompareTo(element) > 0)
+                {
+                    minElement = element;
+                }
+            }
+
+            return minElement;
+        }
+
+        private int GetSumElement(int[] array)
+        {
+            int elementSum = default(int);
+
+            foreach (var element in array)
+            {
+                elementSum += element;
+            }
+
+            return elementSum;
+        }
+
+        protected virtual IOrderable GetOrderableBy(OrderdBy orderdBy)
+        {
+            switch (orderdBy)
+            {
+                case OrderdBy.Descending:
+                {
+                    return new DescendingOrderable();
+                }
+                default:
+                {
+                    return new AscendingOrderable();
+                }
+            }
+        }
+
+        private void BubbleSort(int[][] items, IComparer<int[]> comparer, IOrderable orderable)
+        {
+            bool swapped;
+
+            do
+            {
+                swapped = false;
+
+                for (int i = 1; i < items.Length; i++)
+                {
+                    int comparerableResult = comparer.Compare(items[i - 1], items[i]);
+
+                    if (orderable.OrderBy(comparerableResult))
+                    {
+                        Swap(items, i - 1, i);
+
+                        swapped = true;
+                    }
+                }
+            }
+
+            while (swapped != false);
         }
     }
 }

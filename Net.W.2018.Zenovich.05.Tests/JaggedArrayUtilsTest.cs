@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Net.W._2018.Zenovich._05.API;
 using Net.W._2018.Zenovich._05.Model;
+using Net.W._2018.Zenovich._05.Model.Comparer;
 
 namespace Net.W._2018.Zenovich._05.Tests
 {
@@ -79,6 +80,27 @@ namespace Net.W._2018.Zenovich._05.Tests
 
             // act
             int[][] actual = jaggedArrayUtils.MinSort(inputArray);
+
+            // assert
+            for (int i = 0; i < expected.Length; i++)
+            {
+                CollectionAssert.AreEqual(expected[i], actual[i]);
+            }
+        }
+
+        [TestMethod]
+        public void MinSort_MinComparer_OrderByAscending()
+        {
+            // arrange
+            int[][] expected = new int[3][]
+            {
+                new int[] { 8, 3, 7, -2, 60 },
+                new int[] { 1, 22, 4, 11},
+                new int[] { 1, 55, 4, 11},
+            };
+
+            // act
+            int[][] actual = jaggedArrayUtils.Sort(inputArray, new MinComparer());
 
             // assert
             for (int i = 0; i < expected.Length; i++)

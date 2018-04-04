@@ -40,7 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AscendingOrderable.cs" />
+    <Compile Include="Comparer\SumComparer.cs" />
+    <Compile Include="Comparer\MaxComparer.cs" />
+    <Compile Include="DescendingOrderable.cs" />
+    <Compile Include="IOrderable.cs" />
     <Compile Include="JaggedArrayUtils.cs" />
+    <Compile Include="Comparer\MinComparer.cs" />
     <Compile Include="Polynomial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
